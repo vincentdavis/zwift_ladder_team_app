@@ -252,31 +252,3 @@ def get_ladder_rankings(url: str = "https://ladder.cycleracing.club") -> list[Te
     except httpx.RequestError as e:
         print(f"Error fetching ladder rankings: {e}")
         return []
-
-
-if __name__ == "__main__":
-    try:
-        with httpx.Client() as client:
-            response = client.get(f"https://ladder.cycleracing.club/openteam/n/{206}")
-            response.raise_for_status()
-    except httpx.RequestError as e:
-        print(f"Error fetching squad: {e}")
-
-    soup = BeautifulSoup(response.content, "html.parser")
-    # find the script with the data
-    script_tag = soup.find("script", string=re.compile(r"Ladder\.thisteam\s*="))
-    script_content = script_tag.string
-    str_data = {
-        "thisteam": re.search(r"Ladder\.thisteam\s*=\s*({.*?});", script_content, re.DOTALL),
-        "pageclub": re.search(r"Ladder\.pageclub\s*=\s*({.*?});", script_content, re.DOTALL),
-        "stats": re.search(r"Ladder\.stats\s*=\s*({.*?});", script_content, re.DOTALL),
-        "team": re.search(r"Ladder\.team\s*=\s*({.*?});", script_content, re.DOTALL),
-        "belts": re.search(r"Ladder\.belts\s*=\s*({.*?});", script_content, re.DOTALL),
-    }
-    json_data = {"id": 206}
-    for key, value in str_data.items():
-        if value:
-            json_data[key] = json.loads(value.group(1))
-        else:
-            json_data[key] = {}
-    print(json_data)

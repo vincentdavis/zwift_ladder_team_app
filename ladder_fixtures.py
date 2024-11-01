@@ -5,6 +5,7 @@ import pandas as pd
 import streamlit as st
 
 from data_api import get_ladder
+from logger_config import logger
 
 st.set_page_config(page_title="Ladder Fixtures", layout="wide", initial_sidebar_state="collapsed")
 
@@ -36,6 +37,7 @@ def cache_ladder():
     return get_ladder()
 
 
+logger.info("Load Ladder Fixture data")
 ladder = cache_ladder()
 
 df_ladder = pd.DataFrame(ladder["fixtures"])
