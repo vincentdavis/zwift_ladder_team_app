@@ -42,6 +42,7 @@ def match_power_plot(df):
         yaxis=dict(
             range=[-watt_y_range, watt_y_range]  # This centers 0
         ),
+        height=600,
     )
 
     wkg_fig = px.line(
@@ -61,6 +62,7 @@ def match_power_plot(df):
         yaxis=dict(
             range=[-wkg_y_range, wkg_y_range]  # This centers 0
         ),
+        height=600,
     )
 
     return df_differance, w_fig, wkg_fig
