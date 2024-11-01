@@ -8,7 +8,7 @@ from data_plots import match_power_plot
 from data_stats import compare_rosters
 from logger_config import logger
 
-st.set_page_config(page_title="Match", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Match", layout="wide", initial_sidebar_state="collapsed", menu_items=None)
 
 
 # Constants
@@ -34,7 +34,7 @@ def cache_squad(team_id):
 
 if not st.query_params:
     logger.error("No query_params")
-    st.warning("No query_params")
+    st.warning("You need to open a match from the main Ladder Fixtures page")
 else:
     logger.info(f"query_params: {st.query_params}")
     with st.spinner(f"Loading match: {st.query_params["home_id"]} -vs- {st.query_params["away_id"]} ..."):
@@ -71,8 +71,13 @@ else:
     )
 
     df_rosters = compare_rosters(home_team, away_team)
+    logger.info(f"style these columns: {[c for c in df_rosters.columns if c.startswith("w")]}")
+    styled_df_rosters = df_rosters.style.background_gradient(
+        subset=[c for c in df_rosters.columns if c.startswith("w")], cmap="viridis"
+    )
+
     st.dataframe(
-        df_rosters,
+        styled_df_rosters,
         hide_index=True,
         column_config={
             "ZP": st.column_config.LinkColumn("ZP Profile", display_text="Open"),

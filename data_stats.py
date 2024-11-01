@@ -40,4 +40,5 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
         df_away_roster = pd.DataFrame()
 
     df_rosters = pd.concat([df_home_roster, df_away_roster], axis=0)
+    df_rosters.reset_index(drop=True, inplace=True)
     return df_rosters
