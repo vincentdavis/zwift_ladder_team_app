@@ -64,7 +64,11 @@ def filter_dataframe(df, team: str = "All Teams"):
     if team != "All Teams":
         df = df[(df["Home Name"] == team) | (df["Away Name"] == team)]
     st.dataframe(
-        df[FIXTURE_COLUMNS], column_config={"Link": st.column_config.LinkColumn("View Match", display_text="Open")}
+        df[FIXTURE_COLUMNS],
+        column_config={
+            "Link": st.column_config.LinkColumn("View Match", display_text="Open"),
+        },
+        use_container_width=True,
     )
 
 
