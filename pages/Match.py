@@ -3,7 +3,8 @@ import json
 import pandas as pd
 import streamlit as st
 
-from ladder import get_squad
+from data_api import get_squad
+from data_plots import match_power_plot
 
 st.set_page_config(page_title="Ladder Fixtures", layout="wide", initial_sidebar_state="collapsed")
 st.title("Match")
@@ -69,7 +70,11 @@ else:
     if home_roster:
         riders = []
         for rider in home_roster:
-            rider_data = {"name": rider["ZPName"], "FTP": rider["zwiftData"]["ftp"]}
+            rider_data = {
+                "Team": home_team["thisteam"]["name"],
+                "Name": rider["ZPName"],
+                "FTP": rider["zwiftData"]["ftp"],
+            }
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})
             riders.append(rider_data)
         df_home_roster = pd.DataFrame(riders)
@@ -78,7 +83,11 @@ else:
     if away_roster:
         riders = []
         for rider in away_roster:
-            rider_data = {"name": rider["ZPName"], "FTP": rider["zwiftData"]["ftp"]}
+            rider_data = {
+                "Team": away_team["thisteam"]["name"],
+                "Name": rider["ZPName"],
+                "FTP": rider["zwiftData"]["ftp"],
+            }
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})
             riders.append(rider_data)
         df_away_roster = pd.DataFrame(riders)
@@ -87,3 +96,7 @@ else:
 
     df_rosters = pd.concat([df_home_roster, df_away_roster], axis=0)
     st.dataframe(df_rosters)
+
+    df_differance, w_fig, wkg_fig = match_power_plot(df_rosters)
+    st.plotly_chart(w_fig, use_container_width=True)
+    st.plotly_chart(wkg_fig, use_container_width=True)

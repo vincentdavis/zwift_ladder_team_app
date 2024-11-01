@@ -4,7 +4,7 @@ import json
 import pandas as pd
 import streamlit as st
 
-from ladder import get_ladder
+from data_api import get_ladder
 
 st.set_page_config(page_title="Ladder Fixtures", layout="wide", initial_sidebar_state="collapsed")
 
