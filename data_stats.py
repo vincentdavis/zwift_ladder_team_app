@@ -12,6 +12,8 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
             rider_data = {
                 "Team": home_team["thisteam"]["name"],
                 "Name": rider["ZPName"],
+                "ZP": f"https://zwiftpower.com/profile.php?z={rider['id']}",
+                "ZR": f"https://www.zwiftracing.app/riders/{rider['id']}",
                 "FTP": rider["zwiftData"]["ftp"],
             }
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})
@@ -26,6 +28,8 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
             rider_data = {
                 "Team": away_team["thisteam"]["name"],
                 "Name": rider["ZPName"],
+                "ZP": f"https://zwiftpower.com/profile.php?z={rider['id']}",
+                "ZR": f"https://www.zwiftracing.app/riders/{rider['id']}",
                 "FTP": rider["zwiftData"]["ftp"],
             }
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})

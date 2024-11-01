@@ -71,7 +71,14 @@ else:
     )
 
     df_rosters = compare_rosters(home_team, away_team)
-    st.dataframe(df_rosters)
+    st.dataframe(
+        df_rosters,
+        hide_index=True,
+        column_config={
+            "ZP": st.column_config.LinkColumn("ZP Profile", display_text="Open"),
+            "ZR": st.column_config.LinkColumn("ZR Profile", display_text="Open"),
+        },
+    )
 
     df_differance, w_fig, wkg_fig = match_power_plot(df_rosters)
     st.plotly_chart(w_fig, use_container_width=True)
