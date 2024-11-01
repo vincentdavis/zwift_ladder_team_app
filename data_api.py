@@ -1,10 +1,32 @@
 import json
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import httpx
 from bs4 import BeautifulSoup
+
+
+def format_timedelta(td: timedelta) -> str:
+    """Formats a timedelta into a human-readable string showing hours and minutes.
+
+    Args:
+        td: Timedelta to format
+    Returns:
+        str: Formatted string like "2h 30m" or "Past" for negative timedeltas
+
+    """
+    if td.total_seconds() < 0:
+        return "Past"
+
+    total_hours = int(td.total_seconds() // 3600)
+    minutes = int((td.total_seconds() % 3600) // 60)
+
+    if total_hours > 24:
+        days = total_hours // 24
+        hours = total_hours % 24
+        return f"{days}d {hours}h {minutes}m"
+    return f"{total_hours}h {minutes}m"
 
 
 def parse_fixtures(html_content: str) -> list[dict]:
@@ -252,3 +274,10 @@ def get_ladder_rankings(url: str = "https://ladder.cycleracing.club") -> list[Te
     except httpx.RequestError as e:
         print(f"Error fetching ladder rankings: {e}")
         return []
+
+
+def datetime_handler(obj):
+    """Custom JSON serializer for objects not serializable by default json code"""
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")

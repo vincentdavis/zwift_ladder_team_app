@@ -24,6 +24,8 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})
             riders.append(rider_data)
         df_home_roster = pd.DataFrame(riders)
+        df_home_roster[COL_WATTS + COL_WKG] = df_home_roster[COL_WATTS + COL_WKG].replace(0, pd.NA)
+
     else:
         logger.warning("No home roster found")
         df_home_roster = pd.DataFrame()
@@ -40,6 +42,8 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
             rider_data.update({k: v for k, v in rider["powerMax"]["ninety"].items()})
             riders.append(rider_data)
         df_away_roster = pd.DataFrame(riders)
+        logger.info("If the power value is zero, set it to None")
+        df_away_roster[COL_WATTS + COL_WKG] = df_away_roster[COL_WATTS + COL_WKG].replace(0, pd.NA)
     else:
         logger.warning("No away roster found")
         df_away_roster = pd.DataFrame()

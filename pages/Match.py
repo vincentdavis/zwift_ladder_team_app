@@ -8,7 +8,7 @@ from data_plots import match_power_plot
 from data_stats import COL_BASE, COL_OTHER, COL_WATTS, COL_WKG, compare_rosters
 from logger_config import logger
 
-st.set_page_config(page_title="Match", layout="wide", initial_sidebar_state="collapsed", menu_items=None)
+st.set_page_config(page_title="Match", layout="wide", initial_sidebar_state="collapsed")
 
 
 # Constants
