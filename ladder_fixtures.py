@@ -31,7 +31,6 @@ def cache_ladder() -> dict:
 
     Returns:
         Dict: Ladder fixture data
-
     Raises:
         RuntimeError: If ladder data cannot be retrieved
 
@@ -50,11 +49,31 @@ def cache_ladder() -> dict:
 ladder = cache_ladder()
 
 df_ladder = pd.DataFrame(ladder["fixtures"])
+team_list = sorted(list(df_ladder["Home Name"].unique()) + list(df_ladder["Away Name"].unique()))
+team_list.insert(0, "All Teams")
+
 df_ladder["Link"] = df_ladder.apply(lambda row: f"/Match?home_id={row['Home id']}&away_id={row['Away id']}", axis=1)
 now = datetime.now()
 df_ladder["time_delta"] = df_ladder["date_time"] - now
 df_ladder["Go Time"] = df_ladder["time_delta"].apply(format_timedelta)
 df_ladder.sort_values(by=["date_time"], inplace=True)
+
+
+def filter_dataframe(df, team: str = "All Teams"):
+    """Filter dataframe based on selected team"""
+    if team != "All Teams":
+        df = df[(df["Home Name"] == team) | (df["Away Name"] == team)]
+    st.dataframe(
+        df[FIXTURE_COLUMNS], column_config={"Link": st.column_config.LinkColumn("View Match", display_text="Open")}
+    )
+
+
+selected_team = st.selectbox(
+    "Select team", team_list, index=0, on_change=filter_dataframe, args=(df_ladder, "team_filter"), key="team_filter"
+)
+
+filter_dataframe(df_ladder, selected_team)
+
 
 col1, col2 = st.columns(2)
 
@@ -70,7 +89,3 @@ with col2:
         file_name="ladder.json",
         mime="application/json",
     )
-
-st.dataframe(
-    df_ladder[FIXTURE_COLUMNS], column_config={"Link": st.column_config.LinkColumn("View Match", display_text="Open")}
-)
