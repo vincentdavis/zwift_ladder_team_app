@@ -5,7 +5,7 @@ import streamlit as st
 
 from data_api import get_squad
 from data_plots import match_power_plot
-from data_stats import compare_rosters
+from data_stats import COL_BASE, COL_OTHER, COL_WATTS, COL_WKG, compare_rosters
 from logger_config import logger
 
 st.set_page_config(page_title="Match", layout="wide", initial_sidebar_state="collapsed", menu_items=None)
@@ -70,10 +70,13 @@ else:
         hide_index=True,
     )
 
-    df_rosters = compare_rosters(home_team, away_team)
-    logger.info(f"style these columns: {[c for c in df_rosters.columns if c.startswith("w")]}")
+    df_rosters = compare_rosters(home_team, away_team)[COL_BASE + COL_WATTS + COL_WKG + COL_OTHER]
+    logger.info("style columns")
     styled_df_rosters = df_rosters.style.background_gradient(
-        subset=[c for c in df_rosters.columns if c.startswith("w")], cmap="viridis"
+        subset=[c for c in df_rosters.columns if c in COL_WATTS], cmap="viridis"
+    )
+    styled_df_rosters = styled_df_rosters.background_gradient(
+        subset=[c for c in styled_df_rosters.columns if c in COL_WKG], cmap="viridis"
     )
 
     st.dataframe(
@@ -88,7 +91,15 @@ else:
     df_differance, w_fig, wkg_fig = match_power_plot(df_rosters)
     st.plotly_chart(w_fig, use_container_width=True)
     st.plotly_chart(wkg_fig, use_container_width=True)
-    st.dataframe(df_differance)
+
+    logger.info("style columns")
+    styled_df_differance = df_differance.style.background_gradient(
+        subset=[c for c in df_differance.columns if c.startswith("w") and not c.startswith("wkg")], cmap="viridis"
+    )
+    styled_df_differance = styled_df_differance.background_gradient(
+        cmap="viridis", subset=[c for c in styled_df_differance.columns if c.startswith("wkg")]
+    )
+    st.dataframe(styled_df_differance, hide_index=True)
     st.download_button(
         label="Download Comparison data",
         data=df_differance.to_csv(index=False),

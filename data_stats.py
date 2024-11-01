@@ -2,6 +2,11 @@ import pandas as pd
 
 from logger_config import logger
 
+COL_BASE = ["Team", "Name", "ZP", "ZR", "FTP"]
+COL_WATTS = ["w5", "w10", "w15", "w30", "w60", "w120", "w300", "w600", "w1200", "w1800"]
+COL_WKG = ["wkg5", "wkg10", "wkg15", "wkg30", "wkg60", "wkg120", "wkg300", "wkg600", "wkg1200", "wkg1800"]
+COL_OTHER = ["wkg", "watts", "wtotal", "wkgtotal"]
+
 
 def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
     home_roster = home_team.get("roster")
@@ -40,5 +45,6 @@ def compare_rosters(home_team: dict, away_team: dict) -> pd.DataFrame:
         df_away_roster = pd.DataFrame()
 
     df_rosters = pd.concat([df_home_roster, df_away_roster], axis=0)
+    df_rosters.sort_values(by=["Team", "FTP"], ascending=False, inplace=True)
     df_rosters.reset_index(drop=True, inplace=True)
     return df_rosters
